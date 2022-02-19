@@ -12,11 +12,11 @@ headers = {
 
 
 def scrape_subcategory_links():
-    all_links = pd.read_excel('greenweez_categories.xlsx')['links'].tolist()
+    all_links = pd.read_excel('greenweez_categories.xlsx')['links'].tolist() # collecting all category links from excel
 
     data1 = {}
     lists1 = []
-    for li in all_links:
+    for li in all_links: # going to each category link to collect, links of sub-categories
         print(f'Scraping Sub-category links from, Main Category: {li}')
         r = requests.get(li,headers = headers)
         soup = bs(r.content, 'html.parser')
@@ -25,17 +25,18 @@ def scrape_subcategory_links():
         for tab in links:
             link = 'https://www.greenweez.com/' + str(soup)[tab+26:tab+70].split('"')[0]
             category = link.split('/')[-1].split('-')[-1]
-            category = link.split('/')[-1].replace(f'-{category}','')
+            category = link.split('/')[-1].replace(f'-{category}','') # each sub-category urls
             data1 = {
                 'Main-Category': li,
                 'Sub-Category': category,
                 'Sub-Category-Link': link
             }
             lists1.append(data1)
-    df1 = pd.DataFrame(lists1).drop_duplicates(subset=['Sub-Category-Link'])
+    df1 = pd.DataFrame(lists1).drop_duplicates(subset=['Sub-Category-Link']) # removing duplicates from the links(sub-cat)
     link_count = len(df1['Sub-Category-Link'].tolist())
     print(f'Total {link_count} sub-categories found...')
     return df1
+
 
 
 lists2 = []
@@ -48,38 +49,42 @@ def scrape_links_from_each_subcategory():
     main_category = df['Main-Category'].tolist()
     count = 1
     for link,sub_cat_name,main_cat in zip(sub_category_links,sub_category_name,main_category):
-        r = requests.get(link,headers = headers)
-        soup = bs(r.content,'html.parser')
-
-        num_of_products = int(soup.find('span',attrs = {'id':'page_list_nbr_article'}).text)
         print(f'Sub_category {count}: {link}')
-        print(f'Num. of Products: {num_of_products}')
         count = count+1
+        
+        try:
+            r = requests.get(link,headers = headers)
+            soup = bs(r.content,'html.parser')
 
-        loop = num_of_products/102
-        if loop is not int:
-            loopy = int(loop) + 1
+            num_of_products = int(soup.find('span',attrs = {'id':'page_list_nbr_article'}).text)
+            print(f'Num. of Products: {num_of_products}')
+
+            loop = num_of_products/102
+            if loop is not int:
+                loopy = int(loop) + 1
 
 
-        for i in range(1,loopy+1):
-            print(f'Pagination: {i}')
-            link = link + f'?page={i}'
-            try:
-                r = requests.get(link,headers = headers)
-                soup = bs(r.content,'html.parser')
+            for i in range(1,loopy+1):
+                print(f'Pagination: {i}')
+                link = link + f'?page={i}'
+                try:
+                    r = requests.get(link,headers = headers)
+                    soup = bs(r.content,'html.parser')
 
-                prod_link = soup.findAll('div',attrs = {'class':'titre d-flex w-100 flex-column text-left position-relative'})
-                for prod in prod_link:
-                    pro_link = prod.find('a')['href']
-                    data2 = {
-                        'Main Category': main_cat,
-                        'Sub-Category': sub_cat_name,
-                        'Sub-Category link': link,
-                        'Product link': pro_link
-                    }
-                    lists2.append(data2)
-            except:
-                pass
+                    prod_link = soup.findAll('div',attrs = {'class':'titre d-flex w-100 flex-column text-left position-relative'})
+                    for prod in prod_link:
+                        pro_link = prod.find('a')['href']
+                        data2 = {
+                            'Main Category': main_cat,
+                            'Sub-Category': sub_cat_name,
+                            'Sub-Category link': link,
+                            'Product link': pro_link
+                        }
+                        lists2.append(data2)
+                except:
+                    pass
+        except:
+            pass
     df3 = pd.DataFrame(lists2).drop_duplicates(subset=['Product link'])
     df3.to_excel('products_links.xlsx',encoding = 'utf-8-sig',index = False)
 
