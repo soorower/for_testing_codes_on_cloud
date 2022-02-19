@@ -1,4 +1,3 @@
-from tkinter import E
 from discord_webhook import DiscordWebhook, DiscordEmbed
 webhook = DiscordWebhook(
     url='https://discord.com/api/webhooks/885747859687866378/XZJEkus2I98yXl6Xuep0d_ckPeQz1msU9zs9INvomU3c8TAdvI6oiWSkln3SXd0dUK3y', username="Exchange Scraped File")
