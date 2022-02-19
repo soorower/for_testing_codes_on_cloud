@@ -1,1 +1,1 @@
-worker: python greenweez.py
+worker: python greenweez_product_scrape.py
