@@ -93,12 +93,12 @@ def main():
     ])
 
     # urls = ['https:'+x.split(':')[-1].strip() for x in open('Product_links.txt', 'r', encoding='utf-8').read().strip().split('\n')[1::2]]
-    urls = pd.read_excel('products_links.xlsx')['Product link'].tolist()
+    urls = pd.read_excel('products_links2.xlsx')['Product link'].tolist()
     for url in urls:
         get_data(url, df)
         df = df.fillna('')
 
-        df.to_excel('greenweez_full_scrape.xlsx', index=None, encoding='utf-32')
+        df.to_excel('greenweez_full_scrape2.xlsx', index=None, encoding='utf-32')
 
 
 if __name__ == '__main__':
@@ -107,8 +107,8 @@ if __name__ == '__main__':
  
 
 embed = DiscordEmbed(title='greenweez_full', description=f'''Scraping Done!''')
-with open(f'greenweez_full_scrape.xlsx', "rb") as f:
-    webhook.add_file(file=f.read(), filename=f'greenweez_full_scrape.xlsx')
+with open(f'greenweez_full_scrape2.xlsx', "rb") as f:
+    webhook.add_file(file=f.read(), filename=f'greenweez_full_scrape2.xlsx')
 webhook.add_embed(embed)
 response = webhook.execute()
 webhook.remove_embeds()
