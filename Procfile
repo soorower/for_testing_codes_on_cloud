@@ -1,1 +1,1 @@
-worker: python greenweez_product_scrape.py
+worker: python hub_docker.py
