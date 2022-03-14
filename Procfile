@@ -1,1 +1,1 @@
-worker: python hub_docker.py
+worker: python test_it.py
