@@ -16,7 +16,7 @@ print('Date input type: (Month/Date/Year) Ex. 07/23/2021')
 # end_d = input('Enter Second Date Range: ')
 excel_name = 'dot_sent_fiverr'
 
-start_d = '01/11/2022'
+start_d = '11/01/2021'
 end_d = '03/23/2022'
 start = datetime.datetime.strptime(start_d, "%m/%d/%Y")
 end = datetime.datetime.strptime(end_d, "%m/%d/%Y")
